@@ -1,0 +1,67 @@
+name: Build Windows Installer
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Liberica JDK Full includes JavaFX jmods – needed for jpackage bundling
+      - name: Set up Liberica JDK 21 Full (with JavaFX)
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'liberica'
+          java-package: jdk+fx
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-gradle
+
+      - name: Build fat JAR
+        run: ./gradlew jar --no-daemon
+
+      - name: Verify JAR
+        run: dir build\libs\
+        shell: cmd
+
+      - name: Create Windows installer with jpackage
+        run: |
+          jpackage `
+            --input "build\libs" `
+            --main-jar "VokabelTrainer.jar" `
+            --main-class "com.vokabeltrainer.Main" `
+            --name "VokabelTrainer" `
+            --app-version "2.0.0" `
+            --vendor "Fritztechnic" `
+            --description "VokabelTrainer – Vokabeln lernen mit dem Leitner-System" `
+            --java-options "-Dfile.encoding=UTF-8" `
+            --java-options "--add-modules javafx.controls,javafx.fxml,javafx.graphics,javafx.base" `
+            --java-options "--add-opens javafx.graphics/com.sun.glass.utils=ALL-UNNAMED" `
+            --java-options "--add-opens javafx.graphics/com.sun.marlin=ALL-UNNAMED" `
+            --type exe `
+            --win-dir-chooser `
+            --win-menu `
+            --win-shortcut `
+            --win-per-user-install `
+            --dest "installer"
+        shell: pwsh
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: VokabelTrainer-Windows-Installer
+          path: installer\*.exe
+          if-no-files-found: error
