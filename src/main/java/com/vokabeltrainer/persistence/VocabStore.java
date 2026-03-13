@@ -108,8 +108,8 @@ public class VocabStore {
     /** Alle Vokabeln einer bestimmten Box verschieben. */
     public void moveAllInBox(int fromBox, int toBox) {
         vocabs.stream()
-            .filter(v -> v.getBox() == fromBox)
-            .forEach(v -> v.setBox(toBox));
+                .filter(v -> v.getBox() == fromBox)
+                .forEach(v -> v.setBox(toBox));
         save();
     }
 
@@ -122,8 +122,8 @@ public class VocabStore {
     /** Fortschritt für eine Sprache zurücksetzen. */
     public void resetProgressForLanguage(String language) {
         vocabs.stream()
-            .filter(v -> language.equals(v.getLanguage()))
-            .forEach(Vocabulary::resetProgress);
+                .filter(v -> language.equals(v.getLanguage()))
+                .forEach(Vocabulary::resetProgress);
         save();
     }
 
@@ -136,17 +136,17 @@ public class VocabStore {
     /** Alle einzigartigen Sprachen. */
     public List<String> getLanguages() {
         return vocabs.stream()
-            .map(Vocabulary::getLanguage)
-            .filter(l -> l != null && !l.isBlank())
-            .distinct()
-            .sorted()
-            .collect(Collectors.toList());
+                .map(Vocabulary::getLanguage)
+                .filter(l -> l != null && !l.isBlank())
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
     }
 
     /** Anzahl Vokabeln pro Sprache. */
     public Map<String, Long> getLanguageCounts() {
         return vocabs.stream()
-            .collect(Collectors.groupingBy(Vocabulary::getLanguage, Collectors.counting()));
+                .collect(Collectors.groupingBy(Vocabulary::getLanguage, Collectors.counting()));
     }
 
     // ── Abfragen ─────────────────────────────────────────
@@ -159,54 +159,54 @@ public class VocabStore {
     /** Fällige Vokabeln für eine Sprache. */
     public List<Vocabulary> getDueVocabs(String language) {
         return vocabs.stream()
-            .filter(Vocabulary::isDue)
-            .filter(v -> language == null || language.isEmpty() || language.equals(v.getLanguage()))
-            .collect(Collectors.toList());
+                .filter(Vocabulary::isDue)
+                .filter(v -> language == null || language.isEmpty() || language.equals(v.getLanguage()))
+                .collect(Collectors.toList());
     }
 
     /** Alle einzigartigen Kategorien. */
     public List<String> getCategories() {
         return vocabs.stream()
-            .map(Vocabulary::getCategory)
-            .filter(c -> c != null && !c.isBlank())
-            .distinct()
-            .sorted()
-            .collect(Collectors.toList());
+                .map(Vocabulary::getCategory)
+                .filter(c -> c != null && !c.isBlank())
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
     }
 
     /** Kategorien für eine Sprache. */
     public List<String> getCategories(String language) {
         return vocabs.stream()
-            .filter(v -> language == null || language.isEmpty() || language.equals(v.getLanguage()))
-            .map(Vocabulary::getCategory)
-            .filter(c -> c != null && !c.isBlank())
-            .distinct()
-            .sorted()
-            .collect(Collectors.toList());
+                .filter(v -> language == null || language.isEmpty() || language.equals(v.getLanguage()))
+                .map(Vocabulary::getCategory)
+                .filter(c -> c != null && !c.isBlank())
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
     }
 
     /** Vokabeln filtern nach Sprache, Kategorie und Suchbegriff. */
     public List<Vocabulary> search(String query, String category, String language) {
         return vocabs.stream()
-            .filter(v -> language == null || language.isEmpty() || language.equals(v.getLanguage()))
-            .filter(v -> category == null || category.isEmpty() || category.equals(v.getCategory()))
-            .filter(v -> query == null || query.isEmpty()
-                || v.getWord().toLowerCase().contains(query.toLowerCase())
-                || v.getTranslation().toLowerCase().contains(query.toLowerCase()))
-            .collect(Collectors.toList());
+                .filter(v -> language == null || language.isEmpty() || language.equals(v.getLanguage()))
+                .filter(v -> category == null || category.isEmpty() || category.equals(v.getCategory()))
+                .filter(v -> query == null || query.isEmpty()
+                        || v.getWord().toLowerCase().contains(query.toLowerCase())
+                        || v.getTranslation().toLowerCase().contains(query.toLowerCase()))
+                .collect(Collectors.toList());
     }
 
     /** Vokabeln für eine Lernsession. */
     public List<Vocabulary> getLearnSession(int maxCount, String category, String language) {
         List<Vocabulary> pool = vocabs.stream()
-            .filter(v -> language == null || language.isEmpty() || language.equals(v.getLanguage()))
-            .filter(v -> category == null || category.isEmpty() || category.equals(v.getCategory()))
-            .sorted(Comparator
-                .comparing(Vocabulary::isDue).reversed()
-                .thenComparing(Vocabulary::getBox)
-                .thenComparing(Vocabulary::getLastPracticed))
-            .limit(maxCount)
-            .collect(Collectors.toList());
+                .filter(v -> language == null || language.isEmpty() || language.equals(v.getLanguage()))
+                .filter(v -> category == null || category.isEmpty() || category.equals(v.getCategory()))
+                .sorted(Comparator
+                        .comparing(Vocabulary::isDue).reversed()
+                        .thenComparing(Vocabulary::getBox)
+                        .thenComparing(Vocabulary::getLastPracticed))
+                .limit(maxCount)
+                .collect(Collectors.toList());
         Collections.shuffle(pool);
         return pool;
     }
@@ -219,9 +219,9 @@ public class VocabStore {
     /** Vokabeln einer Box für eine Sprache. */
     public List<Vocabulary> getVocabsInBox(int box, String language) {
         return vocabs.stream()
-            .filter(v -> v.getBox() == box)
-            .filter(v -> language == null || language.isEmpty() || language.equals(v.getLanguage()))
-            .collect(Collectors.toList());
+                .filter(v -> v.getBox() == box)
+                .filter(v -> language == null || language.isEmpty() || language.equals(v.getLanguage()))
+                .collect(Collectors.toList());
     }
 
     // ── Statistiken ──────────────────────────────────────
@@ -230,8 +230,8 @@ public class VocabStore {
 
     public int getTotalCount(String language) {
         return (int) vocabs.stream()
-            .filter(v -> language == null || language.equals(v.getLanguage()))
-            .count();
+                .filter(v -> language == null || language.equals(v.getLanguage()))
+                .count();
     }
 
     public int getMasteredCount() {
@@ -268,8 +268,8 @@ public class VocabStore {
     public int[] getBoxDistribution(String language) {
         int[] dist = new int[5];
         vocabs.stream()
-            .filter(v -> language == null || language.equals(v.getLanguage()))
-            .forEach(v -> dist[Math.max(0, Math.min(4, v.getBox() - 1))]++);
+                .filter(v -> language == null || language.equals(v.getLanguage()))
+                .forEach(v -> dist[Math.max(0, Math.min(4, v.getBox() - 1))]++);
         return dist;
     }
 
@@ -280,9 +280,9 @@ public class VocabStore {
 
     public int getStreak() {
         Set<LocalDate> practiceDays = vocabs.stream()
-            .filter(Vocabulary::hasBeenPracticed)
-            .map(v -> Instant.ofEpochMilli(v.getLastPracticed()).atZone(ZoneId.systemDefault()).toLocalDate())
-            .collect(Collectors.toSet());
+                .filter(Vocabulary::hasBeenPracticed)
+                .map(v -> Instant.ofEpochMilli(v.getLastPracticed()).atZone(ZoneId.systemDefault()).toLocalDate())
+                .collect(Collectors.toSet());
 
         int streak = 0;
         LocalDate day = LocalDate.now();
@@ -340,6 +340,8 @@ public class VocabStore {
         vocabs.add(new Vocabulary("bird", "Vogel", "Tiere", "Englisch"));
         vocabs.add(new Vocabulary("fish", "Fisch", "Tiere", "Englisch"));
         vocabs.add(new Vocabulary("horse", "Pferd", "Tiere", "Englisch"));
+        vocabs.add(new Vocabulary("sheep", "Schaf", "Tiere", "Englisch"));
+        vocabs.add(new Vocabulary("Lion", "Löwe", "Tiere", "Englisch"));
 
         vocabs.add(new Vocabulary("apple", "Apfel", "Essen", "Englisch"));
         vocabs.add(new Vocabulary("bread", "Brot", "Essen", "Englisch"));
@@ -352,6 +354,69 @@ public class VocabStore {
         vocabs.add(new Vocabulary("window", "Fenster", "Alltag", "Englisch"));
         vocabs.add(new Vocabulary("table", "Tisch", "Alltag", "Englisch"));
         vocabs.add(new Vocabulary("chair", "Stuhl", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("rubbish", "Müll", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("accept", "akzeptieren", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("decline", "ablehnen", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("to take out", "rausbringen", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("to empty", "ausräumen/entleeren", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("for", "für", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("from", "von", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("next to", "neben", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("behind", "hinter", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("not", "nicht", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("no", "nein", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("yes", "ja", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("job", "Arbeit", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("never", "nie", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("always", "immer", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("often", "oft", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("sometimes", "manchmal", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("usually", "gewöhnlich(erweise)", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("dishwasher", "Geschirrspüler", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("rain", "Regen", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("Lava", "Glut", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("Raid", "Krieg", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("why", "wieso", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("they", "sie (Plural)", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("her", "sie", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("he/his", "er", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("it", "es", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("possible", "möglich", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("impossible", "unmöglich", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("acceptable", "akzeptabel", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("darkness", "Dunkelheit", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("day", "Tag", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("night", "Nacht", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("week", "Woche", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("weekend", "Wochenende", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("to open", "öffnen", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("to close", "schließen", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("to take", "nehmen", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("to keep", "behalten", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("sun", "Sonne", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("moon", "Mond", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("first", "erste(r)", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("second", "zweite(r)", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("fourth", "vierte(r)", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("fifth", "fünfte(r)", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("sixth", "sechste(r)", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("seventh", "siebente(r)", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("eighth", "achte(r)", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("ninth", "neunte(r)", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("tenth", "zehnte(r)", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("one", "Eins", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("two", "Zwei", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("three", "Drei", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("four", "Vier", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("five", "Fünf", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("six", "Sechs", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("seven", "Sieben", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("eight", "Acht", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("nine", "Neun", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("ten", "Zehn", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("to save", "speichern", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("to delete", "löschen", "Alltag", "Englisch"));
+        vocabs.add(new Vocabulary("to convert", "konvertieren", "Alltag", "Englisch"));
 
         // ── Latein ───────────────────────────────────────
         vocabs.add(new Vocabulary("aqua", "Wasser", "Natur", "Latein"));
